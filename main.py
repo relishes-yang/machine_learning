@@ -68,14 +68,14 @@ ax.stem(
 # === 修复标签重叠问题 ===
 # 1. 添加真实系数的数值标签（向上偏移0.3个单位）
 for i, coef in enumerate(true_coef):
-    ax.text(i, coef + 8, f'{coef:.2f}',
+    ax.text(i, coef + 5, f'{coef:.2f}',
             ha='center', va='bottom',  # 保持底部对齐
             color='black', fontsize=8,
             alpha=0.9)  # 透明度稍低，避免遮挡
 
 # 2. 添加岭回归系数的数值标签（向上偏移0.15个单位）
 for i, coef in enumerate(results["Ridge (L2)"]["coef"]):
-    ax.text(i, coef + 4, f'{coef:.2f}',
+    ax.text(i, coef + 3, f'{coef:.2f}',
             ha='center', va='bottom',
             color='blue', fontsize=8,
             alpha=0.9)
