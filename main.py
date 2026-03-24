@@ -1,22 +1,19 @@
-# main.py
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from model_utils import generate_data, train_models
+import matplotlib
 
 # === 修复中文乱码的关键设置（必须放在最前面） ===
-# 为什么需要这个？因为Streamlit默认不支持中文显示
-# 1. 使用非GUI后端避免乱码（Agg是Matplotlib的纯文本后端）
-import matplotlib
-matplotlib.use('Agg')  # 关键：避免在Streamlit中显示中文乱码
+matplotlib.use('Agg')  # 避免在Streamlit中显示中文乱码
 
-# 2. 设置中文字体（自动尝试多种系统字体）
+# === 关键修复：使用系统默认中文字体（无需字体文件） ===
 try:
-    # 优先使用Windows常用中文字体
-    plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'KaiTi', 'SimSun']
+    # 尝试使用系统默认中文字体（适用于所有环境）
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'KaiTi', 'SimSun', 'Arial Unicode MS', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示为方块的问题
 except:
-    # 如果系统没有中文字体，使用英文替代
+    # 如果系统没有中文字体，使用英文
     plt.rcParams['font.sans-serif'] = ['Arial']
     plt.rcParams['axes.unicode_minus'] = True
 
