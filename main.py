@@ -1,24 +1,32 @@
 import streamlit as st
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 from model_utils import generate_data, train_models
-import matplotlib
+import matplotlib.font_manager as fm
 
-# === 修复中文乱码的关键设置（必须放在最前面） ===
-matplotlib.use('Agg')  # 避免在Streamlit中显示中文乱码
+# === 1. 确保使用 Agg 后端（必须放在最前面） ===
+matplotlib.use('Agg')
 
-# === 关键修复：使用系统默认中文字体（无需字体文件） ===
+# === 2. 关键修复：使用 Streamlit Cloud 上已预装的中文字体 ===
 try:
-    # 尝试使用系统默认中文字体（适用于所有环境）
-    plt.rcParams['font.family'] = 'sans-serif'
-    plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'KaiTi', 'SimSun', 'Arial Unicode MS', 'sans-serif']
-    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示为方块的问题
-except:
-    # 如果系统没有中文字体，使用英文
-    plt.rcParams['font.sans-serif'] = ['Arial']
-    plt.rcParams['axes.unicode_minus'] = True
+    # Streamlit Cloud 已预装 Source Han Sans
+    font_path = 'SourceHanSansSC-Regular.otf'
+    font_prop = fm.FontProperties(fname=font_path)
 
-# === 以下为项目核心逻辑 ===
+    # 设置全局字体
+    plt.rcParams['font.family'] = font_prop.get_name()
+    plt.rcParams['font.sans-serif'] = [font_prop.get_name()]
+    plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
+    print(f"成功加载字体: {font_prop.get_name()}")
+except Exception as e:
+    print(f"字体加载失败: {str(e)}")
+    # 备用方案：使用系统默认中文字体
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'KaiTi', 'SimSun', 'Arial Unicode MS', 'sans-serif']
+    plt.rcParams['axes.unicode_minus'] = False
+
+# === 3. 以下为项目核心逻辑 ===
 
 # === 1. 创建Streamlit页面标题（最顶部的标题） ===
 st.title("岭回归 vs 稀疏回归：系数差异对比")
@@ -28,9 +36,9 @@ st.sidebar.header("参数调整")  # 侧边栏标题
 
 # 用户可以调整的参数（滑块控件）
 n_samples = st.sidebar.slider("样本数量", 50, 500, 200)  # 默认200个样本
-n_features = st.sidebar.slider("总特征数", 5, 20, 10)    # 默认10个特征
+n_features = st.sidebar.slider("总特征数", 5, 20, 10)  # 默认10个特征
 n_informative = st.sidebar.slider("重要特征数", 1, 5, 2)  # 默认只有2个特征重要
-noise = st.sidebar.slider("噪声强度", 5, 50, 10)         # 噪声强度（越大越乱）
+noise = st.sidebar.slider("噪声强度", 5, 50, 10)  # 噪声强度（越大越乱）
 alpha = st.sidebar.slider("正则化强度", 0.1, 10.0, 1.0, 0.1)  # L1/L2正则化强度
 
 # === 3. 生成数据并训练模型（核心计算部分） ===
@@ -94,12 +102,16 @@ for i, coef in enumerate(results["Lasso (Sparse/L1)"]["coef"]):
             color='red', fontsize=8,
             alpha=0.9)
 
+# === 重点修复：显式指定字体属性 ===
+# 使用之前设置的字体
+font_prop = fm.FontProperties(fname=font_path) if 'font_path' in locals() else plt.rcParams['font.sans-serif'][0]
+
 # 设置图表标签（中文已修复）
-ax.set_xlabel('特征索引')  # X轴标签
-ax.set_ylabel('系数值')    # Y轴标签
-ax.legend()                # 显示图例
-ax.grid(True, alpha=0.3)   # 显示网格线
-st.pyplot(fig)             # 将图表显示在Streamlit页面
+ax.set_xlabel('特征索引', fontproperties=font_prop)
+ax.set_ylabel('系数值', fontproperties=font_prop)
+ax.legend(prop={'family': font_prop.get_name()})  # 确保图例也使用正确字体
+ax.grid(True, alpha=0.3)  # 显示网格线
+st.pyplot(fig)  # 将图表显示在Streamlit页面
 
 # === 5. 模型性能对比表格 ===
 st.header("模型性能对比")
