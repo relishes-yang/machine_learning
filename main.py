@@ -10,6 +10,7 @@ matplotlib.use('Agg')  # 避免在Streamlit中显示中文乱码
 # === 关键修复：使用系统默认中文字体（无需字体文件） ===
 try:
     # 尝试使用系统默认中文字体（适用于所有环境）
+    plt.rcParams['font.family'] = 'sans-serif'
     plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'KaiTi', 'SimSun', 'Arial Unicode MS', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示为方块的问题
 except:
