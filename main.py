@@ -25,6 +25,7 @@ except Exception as e:
     # 备用方案：使用系统默认中文字体
     plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'KaiTi', 'SimSun', 'Arial Unicode MS', 'sans-serif']
     plt.rcParams['axes.unicode_minus'] = False
+    font_prop = fm.FontProperties(fname='/system/path/to/font.ttf')  # 确保 font_prop 变量存在并正确设置
 
 # === 3. 以下为项目核心逻辑 ===
 
@@ -102,14 +103,13 @@ for i, coef in enumerate(results["Lasso (Sparse/L1)"]["coef"]):
             color='red', fontsize=8,
             alpha=0.9)
 
-# === 重点修复：显式指定字体属性 ===
-# 使用之前设置的字体
-font_prop = fm.FontProperties(fname=font_path) if 'font_path' in locals() else plt.rcParams['font.sans-serif'][0]
+# === 重点修复：确保图例使用正确字体 ===
+# 显式指定图例字体
+ax.legend(prop=font_prop)  # 关键修复：使用 font_prop 确保图例中文显示
 
 # 设置图表标签（中文已修复）
 ax.set_xlabel('特征索引', fontproperties=font_prop)
 ax.set_ylabel('系数值', fontproperties=font_prop)
-ax.legend(prop={'family': font_prop.get_name()})  # 确保图例也使用正确字体
 ax.grid(True, alpha=0.3)  # 显示网格线
 st.pyplot(fig)  # 将图表显示在Streamlit页面
 
