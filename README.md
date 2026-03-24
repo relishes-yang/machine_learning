@@ -2,5 +2,22 @@
  🌟 项目概述
 本项目使用 Scikit-learn 和 Streamlit 构建了一个交互式可视化应用，直观展示岭回归（Ridge Regression）与稀疏回归（Sparse Regression/Lasso）在系数估计上的核心差异。通过调整参数，用户可以实时观察两种正则化方法如何影响模型系数，从而理解它们在特征选择和模型简化方面的关键区别。
 核心发现：
+
 岭回归（L2）：所有系数变小但不为零（保留所有特征）
+
 稀疏回归（L1）：许多系数直接变为零（自动选择重要特征）
+
+## 运行说明
+
+1. 安装依赖：
+```bash
+pip install -r requirements.txt
+```
+2.启动 Streamlit 应用：
+```bash
+streamlit run main.py
+```
+3.访问网页：
+
+`自动打开浏览器，地址为 http://localhost:8501
+通过侧边栏调整参数，实时观察系数差异`
